@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %} 
+{% block content %}
+  {% for contest in contests %}
+    {% if jury %}    
+      <p><a href="{% url 'jury' contest.id %}">{{ contest }}</a> 
+    {% else %}
+      {% if contest.accept_submits or contest.show_results %}
+        <p><a href="{% url 'user' contest.id %}">
+          {% if LANGUAGE_CODE == 'ru' %}
+            {{ contest }}
+	  {% else %}
+            {{ contest.title_en }}
+          {% endif %}
+          </a> 
+      {% else %}
+          <p>{{ contest }} 
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endblock %}

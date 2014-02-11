@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+   a { 
+       text-decoration: none; /* Отменяем подчеркивание у ссылки */
+     } 
+</style>
+<table border=1>
+<tr>
+  <th>Место</th>
+  <th>Фамилия, имя</th>
+  <th>Класс</th>
+  <th>Макс.класс</th>
+  <th>Город</th>
+  <th>Страна</th>
+  {% for problem in problems %}
+    <th>{{ problem.number }}. {{ problem.title }}</th>
+  {% endfor %}
+</tr>
+
+<!--{{ results }}-->
+{% for result in results %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      {% for field in result.0 %}
+          <td>{{ field }}</td>
+      {% endfor %}
+    {% for cell in result.1 %}
+        {% if forloop.counter == 1 %}
+          
+        {% elif cell.mark == -3 %}
+          <td bgcolor="lightgreen"><a href="check/1st/{{forloop.counter0}}/{{cell.id}}">I</a></td>
+        {% elif cell.mark == -2 %}
+          {% if user in cell.judges %}
+              <td bgcolor="pink"><a href="check/2nd/{{forloop.counter0}}/{{cell.id}}">II</a></td>
+          {% else %}
+              <td bgcolor="lightgreen"><a href="check/2nd/{{forloop.counter0}}/{{cell.id}}">II</a></td>
+          {% endif %}
+        {% elif cell.mark == -1 %}
+          {% if user in cell.judges %}
+            <td bgcolor="pink"><a href="check/3rd/{{forloop.counter0}}/{{cell.id}}">III</a></td>
+          {% else %}
+            <td bgcolor="lightgreen"><a href="check/3rd/{{forloop.counter0}}/{{cell.id}}">III</a></td>
+          {% endif %}
+        {% elif cell == -3 %}
+          <td>&nbsp;</td>
+        {% else %}
+          <td><a href="source/{{cell.id}}">{{ cell.mark }}</a></td>
+        {% endif %}
+    {% endfor%}
+    </tr>
+{% endfor %}
+
+</table>
+<br><br>
+<p><a href={% url 'statistics' %}>Проверка работ</a>
+{% endblock %}

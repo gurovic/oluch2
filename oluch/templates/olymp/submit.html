@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Добро пожаловать, {{user.first_name}} {{user.userprofile.secondname}}!</h2>
+<h2>Welcome, {{user.first_name}} {{user.userprofile.secondname}}!</h2>
+{% if user.userprofile.show_results %}
+    <a href={% url 'myresults' %}>Результаты (Results)</a>
+{% endif %}
+<p>
+<p><a href={% url 'logout' %}>Выйти из системы (Logout)</a>
+<hr>
+<!--Ваши предварительные результаты: <a href={% url 'myresults' %}>см. здесь</a>-->
+<h4>Сдача задач (Submit problems)</h4>
+  <br><br>
+  {% if form %}
+    <p><form action={% url 'user' contest.id %} enctype="multipart/form-data" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Отправить (Submit)" />
+    </form>
+  {% else %}
+    <p>Вы уже сдали решения всех задач.
+    <p>You have already submitted all problems..
+  {% endif %}
+<hr>
+<h4>Список сданных вами задач (List of your submitted problems):</h4>
+{% for prob in submited %}
+  {{prob.1}}. {{prob.2}}<br>
+{% endfor %}
+<hr>
+{% endblock %}

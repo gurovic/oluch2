@@ -1,0 +1,5 @@
+<h4>Список членов жюри</h4>
+
+{% for user in jury %}
+    {{ user.last_name }} {{ user.first_name }}, {{user.email}}<br>
+{% endfor %}

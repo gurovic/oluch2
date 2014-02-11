@@ -1,0 +1,171 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-05 11:52+0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: .\forms.py:6
+msgid "Choose a file"
+msgstr "Выберите файл"
+
+#: .\forms.py:11
+msgid "Problem"
+msgstr "Задача"
+
+#: .\:11
+msgid "Registration"
+msgstr "Регистрация"
+
+#: .\forms.py:15 .\templates\registration\login.html:14
+msgid "Login"
+msgstr "Логин"
+
+#: .\forms.py:16 .\templates\registration\login.html:18
+msgid "Password"
+msgstr "Пароль"
+
+#: .\forms.py:17
+msgid "Password again"
+msgstr "Пароль еще раз"
+
+#: .\forms.py:18
+msgid "Last name"
+msgstr "Фамилия"
+
+#: .\forms.py:19
+msgid "Given name"
+msgstr "Имя"
+
+#: .\forms.py:20
+msgid "Grade"
+msgstr "класс"
+
+#: .\forms.py:21
+msgid "School"
+msgstr "Школа"
+
+#: .\forms.py:21
+msgid "The last grade at your high school"
+msgstr "Номер последнего класса в вашей школе"
+
+#: .\forms.py:23
+msgid "City/settlement"
+msgstr "Город/населенный пункт"
+
+#: .\forms.py:24
+msgid "Country"
+msgstr "Страна"
+
+#: .\forms.py:31 .\forms.py:32
+msgid "Passwords must match."
+msgstr "Пароли должны совпадать."
+
+#: .\forms.py:37 .\forms.py:42
+msgid "Grade must be a number."
+msgstr "Класс должен быть числом."
+
+#: .\models.py:11
+msgid "grade"
+msgstr "класс"
+
+#: .\models.py:12
+msgid "last grade at school"
+msgstr "номер последнего класса в школе"
+
+#: .\models.py:13
+msgid "school"
+msgstr "школа"
+
+#: .\models.py:14
+msgid "city"
+msgstr "город"
+
+#: .\models.py:15
+msgid "country"
+msgstr "страна"
+
+#: .\models.py:15
+msgid "Russia"
+msgstr "Россия"
+
+#: .\models.py:16
+msgid "show results"
+msgstr "показывать результаты"
+
+#: .\templates\base.html:13
+msgid "Contact Vladimir Gurovits if you have technical problems with the site:"
+msgstr "По техническим вопросам обращайтесь к Владимиру Гуровицу:"
+
+#: .\templates\olymp\register.html:13
+msgid "Registration of the participant"
+msgstr "Регистрация участника"
+
+#: .\templates\olymp\register.html:14
+msgid "USE ONLY ENGLISH LETTERS AND DIGITS IN LOGIN AND PASSWORD!"
+msgstr "ИСПОЛЬЗУЙТЕ ТОЛЬКО ЛАТИНСКИЕ БУКВЫ И ЦИФРЫ ДЛЯ ЛОГИНА И ПАРОЛЯ"
+
+#: .\templates\olymp\register.html:19
+msgid "Register"
+msgstr "Зарегистрироваться"
+
+#: .\templates\olymp\user.html:4
+msgid "Welcome"
+msgstr "Добро пожаловать"
+
+#: .\templates\olymp\user.html:6
+msgid "Logout"
+msgstr "Выйти"
+
+#: .\templates\olymp\user.html:9
+msgid "Submit problems"
+msgstr "Отправить решения"
+
+#: .\templates\olymp\user.html:14
+msgid "Submit"
+msgstr "Отправить"
+
+#: .\templates\olymp\user.html:17
+msgid "You have already submitted all problems"
+msgstr "Вы уже сдали решения по всем задачам"
+
+#: .\templates\olymp\user.html:21
+msgid "List of your submitted problems"
+msgstr "Список сданных решений"
+
+#: .\templates\olymp\user.html:28
+msgid "Results"
+msgstr "Результаты проверки"
+
+#: .\templates\olymp\user.html:28
+msgid "To contest list"
+msgstr "К списку олимпиад"
+
+#: .\templates\olymp\user.html:35
+msgid "problem is not checked yet"
+msgstr "решение еще не проверено"
+
+#: .\templates\registration\login.html:7
+msgid "Unknown login or password, try again."
+msgstr "Неизвестный логин или пароль, попробуйте еще раз"
+
+#: .\templates\registration\login.html:23
+msgid "Enter"
+msgstr "Войти"
+
+#: .\views.py:146 .\views.py:153 .\views.py:162
+msgid "no mark"
+msgstr "не оценивать"

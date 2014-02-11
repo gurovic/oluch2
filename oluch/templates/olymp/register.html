@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %} 
+{% block content %}
+<style type="text/css">
+    table{
+        cell-spacing:10;
+    }
+    th {
+        text-align: left;
+        width: 300;
+    }
+</style>
+<h3>{% trans "Registration of the participant" %}</h3>
+{% trans "USE ONLY ENGLISH LETTERS AND DIGITS IN LOGIN AND PASSWORD!" %}
+<form action={% url 'register' %} method="post">{% csrf_token %}
+<p><table class='tab'>
+{{ form.as_table }}
+</table><br>
+<p align="center"><input type="submit" value="{% trans "Register" %}" />
+</form>
+{% endblock %}

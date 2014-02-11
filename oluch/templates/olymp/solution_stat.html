@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<table border=1 cellspacing=0>
+<tr>
+<th>ОЦЕНКА</th>
+{% for prob in problems %}
+ <th>{{ prob }}</th>
+{% endfor %}
+</tr>
+
+{% for line in stats %}
+  <tr>
+  {% for cell in line %}
+    <td>{% if cell > 0%}{{ cell }}{% else %}&nbsp;{% endif %} </td>
+  {% endfor %}
+  </tr>
+{% endfor %}
+</table>
+
+<br><br>
+<p><a href={% url 'statistics' %}>Проверка работ</a>		
+{% endblock %}

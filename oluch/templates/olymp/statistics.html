@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<p>
+
+<br><br><br><p>
+<h4>Проверка работ</h4>
+<div align="right"><a href="http://contest.mccme.ru/turgor/">Выйти из системы</a></div>
+<table border=1>
+<tr>
+<th>&nbsp;</th>
+<th>все задачи</th>
+{% for i in probs %}
+  <th>{{ i.0.number }}. {{ i.0.title}}</th>	
+{% endfor %}
+</tr>
+
+<tr><td>сдано решений</td>
+<td>{{ submits_count }}</td>
+{% for i in probs %}
+  <td>{{ i.1 }}</td>	
+{% endfor %}
+</tr>
+
+<tr><td>выдано на проверку</td>
+<td>&nbsp;</td>
+{% for i in probs %}
+  <td>{{ i.6 }} 
+  {% if i.6 > 0 %}
+
+  {% endif %}
+  </td>	
+{% endfor %}
+</tr>
+
+
+<tr><td>ожидает первой проверки</td>
+<td>{{ zero_count }} ({{ submits_zero_percent }}%)</td>
+{% for i in probs %}
+  <td>{{ i.2 }} 
+  {% if i.2 > 0 %}
+    <a href="check/1st/{{i.0.id}}">Проверить</a>
+  {% endif %}
+  </td>	
+{% endfor %}
+</tr>
+
+<tr><td>ожидает второй проверки</td>
+<td>{{ first_count }} ({{ submits_first_percent }}%)</td>
+{% for i in probs %}
+  <td>{{ i.3 }}	
+  {% if i.4 > 0 %}
+  <a href="check/2nd/{{ i.0.id }}">Проверить ({{ i.4 }})</a>
+  </td>
+  {% endif %}
+{% endfor %}
+</tr>
+
+<tr><td>ожидает третьей проверки</td>
+<td>{{ for_third_count }} ({{ submits_for_third_percent }}%)</td>
+{% for i in probs %}
+  <td>{{ i.8 }}	
+  {% if i.7 > 0 %}
+  <a href="check/3rd/{{ i.0.id }}">Проверить ({{ i.7 }})</a>
+  </td>
+  {% endif %}
+{% endfor %}
+</tr>
+
+<tr><td>проверено полностью</td>
+<td>{{ final_count }} ({{ final_percent }}%)</td>
+{% for i in probs %}
+  <td>{{ i.5 }}</td>	
+{% endfor %}
+</tr>
+</table>
+
+<br><br>
+<p><a href={% url 'results' %}>Таблица результатов/Проверка конкретной работы</a>		
+<p><a href={% url 'solution_stat' %}>Статистика по баллам</a>		
+<p><a href={% url 'jury_list' %}>Список членов жюри</a>		
+{% endblock %}

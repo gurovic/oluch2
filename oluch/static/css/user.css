@@ -1,0 +1,28 @@
+div {
+   padding: 1em 20px 1em 20px;
+}
+
+
+#submit {
+    background: #DDD;
+    float: left;
+    width: 400px;
+}
+
+#submited {
+    background: #DDD;
+    margin-left: 460px;
+}
+
+#results {
+    background: #DDD;
+    margin-left: 460px;
+    margin-top: 1em;
+}
+
+#main {
+    overflow: hidden;
+    zoom: 1;
+    border-bottom: 1px solid gray;
+    border-top: 1px solid gray;
+}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load i18n %} 
+{% block content %}
+<link href="{{ STATIC_URL }}css/user.css" rel="stylesheet" type="text/css" media="screen" />
+<div id="header">
+<h2>{% trans "Welcome" %}, {{user.first_name}}!</h2>
+<p>
+<p><a href={% url 'contest_list' %}>{% trans "To contest list" %}</a>
+<p><a href={% url 'logout' %}>{% trans "Logout" %}</a>
+</div>
+<div id="main">
+<div id="submit">
+{% if contest.accept_submits %}
+<h4>{% trans "Submit problems" %}</h4>
+  <br><br>
+  {% if form %}
+    <p><form action={% url 'user' contest.id %} enctype="multipart/form-data" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="{% trans "Submit" %}" />
+    </form>
+  {% else %}
+    <p>{% trans "You have already submitted all problems" %}
+  {% endif %}
+{% endif %}
+</div>
+<div id="submited">
+<h4>{% trans "List of your submitted problems" %}:</h4>
+{% for prob in submited %}
+  {{prob.1}}. {{prob.2}}<br>
+{% endfor %}
+</div>
+<div id="results">
+{% if contest.show_results %}
+<h4>{% trans "Results" %}</h4>
+{% load mark_filter %}
+{% for submit in submits %}
+  <p>{{ submit.problem }}:
+  {% if submit.final_mark >= 0 %}
+      {{ submit.final_mark|mark }}
+  {% else %}
+      {% trans "problem is not checked yet" %}
+  {% endif %}
+      
+{% endfor %}
+{% endif %}
+</div>
+</div> 
+{% endblock %}
