@@ -80,11 +80,32 @@ def myresults(request, contest_id):
                 context_instance=RequestContext(request)
             )
 
+
 def is_jury(user):
     return Group.objects.get(name='Jury') in user.groups.all()
 
+
+def jury_list(request):
+    jury = User.objects.filter(groups__name__contains='Jury')
+    return render_to_response('olymp/jury_list.html',
+                               {'jury': jury,
+                                    },
+                context_instance=RequestContext(request)
+            )
+
+def submit_statistics(contest_id):
+    total = Submit.objects.filter(problem__contest__id=contest_id).count()
+    zero = Submit.objects.filter(problem__contest__id=contest_id, first_mark=-2).count() 
+    first = Submit.objects.filter(problem__contest__id=contest_id, first_mark__gt=-1, second_mark=-2).count() 
+    second = Submit.objects.filter(problem__contest__id=contest_id, second_mark__gt=-1).count() 
+    final = Submit.objects.filter(problem__contest__id=contest_id, final_mark__gt=-1).count()
+    for_third = Submit.objects.filter(problem__contest__id=contest_id, second_mark__gt=-1,final_mark=-2).count()
+    return (total, zero, first, second, for_third, final)
+
+
 @user_passes_test(is_jury)
 def jury(request, contest_id):
+    # TODO: contest_id
     if Submit.objects.filter(first_mark=-1, first_judge=request.user).count() > 0:
         submit = Submit.objects.filter(first_mark=-1, first_judge=request.user)[0]
         return HttpResponseRedirect(settings.SITE + '/check/1st/' + str(submit.problem_id) + '/' + str(submit.id))
@@ -94,17 +115,19 @@ def jury(request, contest_id):
     if Submit.objects.filter(final_mark=-1, third_judge=request.user).count() > 0:
         submit = Submit.objects.filter(final_mark=-1, third_judge=request.user)[0]
         return HttpResponseRedirect(settings.SITE + '/check/3rd/' + str(submit.problem_id) + '/' + str(submit.id))
-    submits_stat = submit_statistics()
-    problems = Problem.objects.all().order_by('id')
-    problems_number = [Submit.objects.filter(problem=problem).count() for problem in Problem.objects.all().order_by('id')]
-    problems_zero = [Submit.objects.filter(problem=problem, first_mark=-2).count() for problem in Problem.objects.all().order_by('id')]
-    problems_first = [Submit.objects.filter(problem=problem, first_mark__gt=-1).filter(second_mark=-2).count() for problem in Problem.objects.all().order_by('id')]
-    problems_for_third = [Submit.objects.filter(problem=problem, second_mark__gt=-1).filter(final_mark=-2).count() for problem in Problem.objects.all().order_by('id')]
-    problems_checking = [Submit.objects.filter(problem=problem, first_mark=-1).count() + Submit.objects.filter(problem=problem, second_mark=-1).count() + Submit.objects.filter(problem=problem, final_mark=-1).count() for problem in Problem.objects.all().order_by('id')]
-    problems_final = [Submit.objects.filter(problem=problem, final_mark__gt=-1).count() for problem in Problem.objects.all().order_by('id')]
-    problems_first_me = [Submit.objects.filter(problem=problem, first_mark__gt=-1, second_mark=-2).exclude(first_judge=request.user).count() for problem in Problem.objects.all().order_by('id')]
-    problems_second_me = [Submit.objects.filter(problem=problem, second_mark__gt=-1, final_mark=-2).exclude(first_judge=request.user).exclude(second_judge=request.user).count() for problem in Problem.objects.all().order_by('id')]
-    probs = zip(problems, problems_number, problems_zero, problems_first, problems_first_me, problems_final, problems_checking, problems_second_me, problems_for_third)
+
+    submits_stat = submit_statistics(contest_id)
+    problems = Problem.objects.filter(contest__id=contest_id).order_by('id')
+    problems_number = [Submit.objects.filter(problem=problem).count() for problem in problems]
+    problems_zero = [Submit.objects.filter(problem=problem, first_mark=-2).count() for problem in problems]
+    problems_first = [Submit.objects.filter(problem=problem, first_mark__gt=-1).filter(second_mark=-2).count() for problem in problems]
+    problems_for_third = [Submit.objects.filter(problem=problem, second_mark__gt=-1).filter(final_mark=-2).count() for problem in problems]
+    problems_checking = [Submit.objects.filter(problem=problem, first_mark=-1).count() + Submit.objects.filter(problem=problem, second_mark=-1).count() + Submit.objects.filter(problem=problem, final_mark=-1).count() for problem in problems]
+    problems_final = [Submit.objects.filter(problem=problem, final_mark__gt=-1).count() for problem in problems]
+    problems_first_me = [Submit.objects.filter(problem=problem, first_mark__gt=-1, second_mark=-2).exclude(first_judge=request.user).count() for problem in problems]
+    problems_second_me = [Submit.objects.filter(problem=problem, second_mark__gt=-1, final_mark=-2).exclude(first_judge=request.user).exclude(second_judge=request.user).count() for problem in problems]
+    probs = list(zip(problems, problems_number, problems_zero, problems_first, problems_first_me, problems_final, problems_checking, problems_second_me, problems_for_third))
+    print(probs)
     return render_to_response('olymp/statistics.html', {
                     'submits_count': submits_stat[0],
                     'zero_count': submits_stat[1],
@@ -122,6 +145,11 @@ def jury(request, contest_id):
                 context_instance=RequestContext(request)
             )
 
+
+
+
+
+############# Not checked - from oluch1
 
 def source(request, submit_id):
     submit = Submit.objects.get(pk=submit_id)
@@ -226,15 +254,6 @@ def check(request, time, problem_id, submit_id=None):
 
 
 
-def submit_statistics():
-    total = Submit.objects.count()
-    zero = Submit.objects.filter(first_mark=-2).count() 
-    first = Submit.objects.filter(first_mark__gt=-1, second_mark=-2).count() 
-    second = Submit.objects.filter(second_mark__gt=-1).count() 
-    final = Submit.objects.filter(final_mark__gt=-1).count()
-    for_third = Submit.objects.filter(second_mark__gt=-1,final_mark=-2).count()
-    return (total, zero, first, second, for_third, final)
-
 @user_passes_test(is_jury)
 def clear_minus_one(request):
     for submit in Submit.objects.filter(first_mark=-1):
@@ -291,15 +310,6 @@ def results(request):
                                     },
                 context_instance=RequestContext(request)
             )
-
-def jury_list(request):
-    jury = User.objects.filter(groups__name__contains='Jury')
-    return render_to_response('olymp/jury_list.html',
-                               {'jury': jury,
-                                    },
-                context_instance=RequestContext(request)
-            )
-
 
 def register(request):
     if request.method == 'POST':
