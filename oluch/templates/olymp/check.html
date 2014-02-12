@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<p><a href="{{ MEDIA_URL}}resh.doc">Решения</a> <a href="{{ MEDIA_URL}}crit.rtf">Критерии</a>
+<h3>РЕШЕНИЕ №{{submit.id}} ({{ author.last_name }} {{ author.first_name }})</h3>
+{% if time == '1' %}
+<p>ПЕРВАЯ ПРОВЕРКА
+{% else %}
+<p><b>результат первой проверки: <font size=+2>{{ first_mark }}</font></b> ({{ submit.first_judge.last_name }})
+<br><b>комментарий первого проверяющего:</b> {{ submit.first_comment }}
+    {% if time == '2' %}
+    <p>ВТОРАЯ ПРОВЕРКА
+    {% else %}
+    <p><b>результат второй проверки: <font size=+2>{{ second_mark }}</font></b> ({{ submit.second_judge.last_name }})
+    <br><b>комментарий второго проверяющего:</b> {{ submit.second_comment }}
+    <p>ТРЕТЬЯ ПРОВЕРКА
+    {% endif %}
+{% endif %}
+
+<p>Задача {{ submit.problem.number }}. {{ submit.problem.title }}.
+
+{% if is_picture == '1' %}
+  <p><img width=800 src={{ MEDIA_URL }}{{ submit.file }}>
+{% elif is_picture == '2' %}
+  {% for filename in pictures %}
+    {% if '.png' in filename or '.gif' in filename or '.jpg' in filename or '.jpeg' in filename or '.PNG' in filename or '.GIF' in filename or '.JPG' in filename or '.JPEG' in filename %}
+    <p><img width=800 src={{ MEDIA_URL }}{{ filename }}>
+    {% else %}
+    <p><a target="_blank" href={{ MEDIA_URL }}{{ filename }}>{{ filename }}</a>
+    {% endif %}
+  {% endfor %}
+{% else %}
+  <p><a target="_blank" href={{ MEDIA_URL }}{{ submit.file }}>Скачать работу участника</a> ({{ submit.file }})
+{% endif %}
+<form method="POST" action={% url 'rate' contest_id submit.id time %}>{% csrf_token %}
+Комментарий проверяющего:<br> <input type="text" name='comment' size=100>
+<br><br>Поставьте оценку за эту работу: 
+{% for i in marks %}
+  <button type="submit" name='subm' value="{{ i.1 }}">{{ i.0 }}</button>
+{% endfor %}
+<input type="submit" name='subm' value="не оценивать">
+</form>
+{% endblock %}
