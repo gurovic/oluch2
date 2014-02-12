@@ -15,6 +15,8 @@ import datetime
 import oluch.settings as settings
 from oluch.models import Submit, Problem, Contest, Mark
 from oluch.forms import SubmitForm, UserInfoForm
+from django.utils.translation import ugettext_lazy as _
+
 
 def logout_user(request):
     logout(request)
@@ -146,6 +148,35 @@ def jury(request, contest_id):
             )
 
 
+def check(request, time, problem_id, submit_id=None):
+    if submit_id is None:
+        if time == '1':
+            submit = Submit.objects.filter(problem__id=problem_id, first_mark=-2).order_by('?')[0] #latest('datetime')
+            submit.first_mark=-1
+            submit.first_judge=request.user
+        elif time == '2':
+            submit = Submit.objects.filter(problem__id=problem_id, first_mark__gt=-1, second_mark=-2).exclude(first_judge=request.user).order_by('?')[0] #latest('datetime')	
+            submit.second_mark=-1
+            submit.second_judge=request.user
+        else:
+            submit = Submit.objects.filter(problem__id=problem_id, second_mark__gt=-1, final_mark__lt=0).exclude(first_judge=request.user).exclude(second_judge=request.user).order_by('?')[0] #latest('datetime')	
+            submit.final_mark=-1
+            submit.third_judge=request.user
+        submit.save()
+        return HttpResponseRedirect('/check/' + time + ('st/' if time == '1' else 'nd/' if time == '2' else 'rd/') + str(problem_id) + '/' + str(submit.id))
+    else:
+        submit = Submit.objects.get(id=submit_id)
+        return render(request, 'olymp/check.html', {
+                'is_picture': is_picture(submit),
+                'submit': submit,
+                'author': submit.author,
+                'first_mark': settings.marks[int(submit.first_mark)],
+                'second_mark': settings.marks[int(submit.second_mark)],
+                'time': time,
+                'marks': list(zip(settings.marks,range(settings.max_mark + 1))),
+                'pictures': pictures,
+            })
+
 
 
 
@@ -223,34 +254,6 @@ def is_picture(submit):
         return is_picture
         
 @user_passes_test(is_jury)
-def check(request, time, problem_id, submit_id=None):
-    if submit_id is None:
-        if time == '1':
-            submit = Submit.objects.filter(problem__id=problem_id, first_mark=-2).order_by('?')[0] #latest('datetime')
-            submit.first_mark=-1
-            submit.first_judge=request.user
-        elif time == '2':
-            submit = Submit.objects.filter(problem__id=problem_id, first_mark__gt=-1, second_mark=-2).exclude(first_judge=request.user).order_by('?')[0] #latest('datetime')	
-            submit.second_mark=-1
-            submit.second_judge=request.user
-        else:
-            submit = Submit.objects.filter(problem__id=problem_id, second_mark__gt=-1, final_mark__lt=0).exclude(first_judge=request.user).exclude(second_judge=request.user).order_by('?')[0] #latest('datetime')	
-            submit.final_mark=-1
-            submit.third_judge=request.user
-        submit.save()
-        return HttpResponseRedirect(settings.SITE + '/check/' + time + ('st/' if time == '1' else 'nd/' if time == '2' else 'rd/') + str(problem_id) + '/' + str(submit.id))
-    else:
-        submit = Submit.objects.get(id=submit_id)
-        return render(request, 'olymp/check.html', {
-                'is_picture': is_picture(submit),
-                'submit': submit,
-                'author': submit.author,
-                'first_mark': settings.marks[int(submit.first_mark)],
-                'second_mark': settings.marks[int(submit.second_mark)],
-                'time': time,
-                'marks': zip(settings.marks,range(settings.max_mark + 1)),
-                'pictures': pictures,
-            })
 
 
 
