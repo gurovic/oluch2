@@ -22,6 +22,39 @@ def logout_user(request):
     logout(request)
     return HttpResponseRedirect(reverse('login'))
 
+def register(request):
+    if request.method == 'POST':
+        form = UserInfoForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password1 = form.cleaned_data['password1']
+            password2 = form.cleaned_data['password2']
+            email = 'a@aaa.ru'
+            user = User.objects.create_user(username=username, password=password1, 
+                        email=email)
+            user.first_name = form.cleaned_data['firstname']
+            user.last_name = form.cleaned_data['lastname']
+            user.save()
+            profile = user.userprofile
+            profile.grade = form.cleaned_data['grade']
+            profile.maxgrade = form.cleaned_data['maxgrade']
+            profile.school = form.cleaned_data['school']
+            profile.city = form.cleaned_data['city']
+            profile.country = form.cleaned_data['country']
+            profile.save()
+ 
+            user = authenticate(username=username, password=password1)
+            # login(request, user)
+            return HttpResponseRedirect(reverse('contest_list'))
+    else: # If not POST
+        form = UserInfoForm()
+
+    return render_to_response('olymp/register.html', {
+            'form': form,
+        },
+        context_instance=RequestContext(request)
+    )
+
 
 def contest_list(request):
     jury = is_jury(request.user)
@@ -180,26 +213,6 @@ def check(request, contest_id, time, problem_id, submit_id=None):
             })
 
 
-
-
-############# Not checked - from oluch1
-
-def source(request, submit_id):
-    submit = Submit.objects.get(pk=submit_id)
-    submit.first_mark = settings.marks[submit.first_mark]
-    submit.second_mark = settings.marks[submit.second_mark]
-    submit.final_mark = settings.marks[submit.final_mark]
-    author = User.objects.get(pk=submit.author.id)
-    return render_to_response('olymp/source.html', {
-                    'submit': submit,
-                    'author': author,
-                    'is_picture': is_picture(submit),
-                    'pictures': pictures,
-                },
-                context_instance=RequestContext(request)
-            )
-
-
 @user_passes_test(is_jury)
 def rate(request, contest_id, submit_id, time):
     submit = Submit.objects.get(id=submit_id)
@@ -230,6 +243,36 @@ def rate(request, contest_id, submit_id, time):
 #    return HttpResponseRedirect(reverse('statistics', args=[submit]))
     return HttpResponseRedirect(reverse('jury', args=[contest_id]))
 
+@user_passes_test(is_jury)
+def clear_minus_one(request):
+    for submit in Submit.objects.filter(first_mark=-1):
+        submit.first_mark = -2
+        submit.save()
+    for submit in Submit.objects.filter(second_mark=-1):
+        submit.second_mark = -2
+        submit.save()
+    return HttpResponseRedirect(reverse('contest_list'))
+            
+
+
+############# Not checked - from oluch1
+
+def source(request, submit_id):
+    submit = Submit.objects.get(pk=submit_id)
+    submit.first_mark = settings.marks[submit.first_mark]
+    submit.second_mark = settings.marks[submit.second_mark]
+    submit.final_mark = settings.marks[submit.final_mark]
+    author = User.objects.get(pk=submit.author.id)
+    return render_to_response('olymp/source.html', {
+                    'submit': submit,
+                    'author': author,
+                    'is_picture': is_picture(submit),
+                    'pictures': pictures,
+                },
+                context_instance=RequestContext(request)
+            )
+
+
 pictures = []
 def is_picture(submit):
         global pictures
@@ -259,16 +302,6 @@ def is_picture(submit):
 
 
 
-@user_passes_test(is_jury)
-def clear_minus_one(request):
-    for submit in Submit.objects.filter(first_mark=-1):
-        submit.first_mark = -2
-        submit.save()
-    for submit in Submit.objects.filter(second_mark=-1):
-        submit.second_mark = -2
-        submit.save()
-    return HttpResponseRedirect(reverse('statistics'))
-            
 
 @user_passes_test(is_jury)
 def solution_stat(request):
@@ -316,35 +349,3 @@ def results(request):
                 context_instance=RequestContext(request)
             )
 
-def register(request):
-    if request.method == 'POST':
-        form = UserInfoForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password1 = form.cleaned_data['password1']
-            password2 = form.cleaned_data['password2']
-            email = 'a@aaa.ru'
-            user = User.objects.create_user(username=username, password=password1, 
-                        email=email)
-            user.first_name = form.cleaned_data['firstname']
-            user.last_name = form.cleaned_data['lastname']
-            user.save()
-            profile = user.userprofile
-            profile.grade = form.cleaned_data['grade']
-            profile.maxgrade = form.cleaned_data['maxgrade']
-            profile.school = form.cleaned_data['school']
-            profile.city = form.cleaned_data['city']
-            profile.country = form.cleaned_data['country']
-            profile.save()
- 
-            user = authenticate(username=username, password=password1)
-            # login(request, user)
-            return HttpResponseRedirect(reverse('contest_list'))
-    else: # If not POST
-        form = UserInfoForm()
-
-    return render_to_response('olymp/register.html', {
-            'form': form,
-        },
-        context_instance=RequestContext(request)
-    )
