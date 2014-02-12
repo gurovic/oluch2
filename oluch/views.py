@@ -108,15 +108,15 @@ def submit_statistics(contest_id):
 @user_passes_test(is_jury)
 def jury(request, contest_id):
     # TODO: contest_id
-    if Submit.objects.filter(first_mark=-1, first_judge=request.user).count() > 0:
-        submit = Submit.objects.filter(first_mark=-1, first_judge=request.user)[0]
-        return HttpResponseRedirect(settings.SITE + '/check/1st/' + str(submit.problem_id) + '/' + str(submit.id))
-    if Submit.objects.filter(second_mark=-1, second_judge=request.user).count() > 0:
-        submit = Submit.objects.filter(second_mark=-1, second_judge=request.user)[0]
-        return HttpResponseRedirect(settings.SITE + '/check/2nd/' + str(submit.problem_id) + '/' + str(submit.id))
-    if Submit.objects.filter(final_mark=-1, third_judge=request.user).count() > 0:
-        submit = Submit.objects.filter(final_mark=-1, third_judge=request.user)[0]
-        return HttpResponseRedirect(settings.SITE + '/check/3rd/' + str(submit.problem_id) + '/' + str(submit.id))
+    #if Submit.objects.filter(first_mark=-1, first_judge=request.user).count() > 0:
+    #    submit = Submit.objects.filter(first_mark=-1, first_judge=request.user)[0]
+    #    return HttpResponseRedirect(settings.SITE + '/check/1st/' + str(submit.problem_id) + '/' + str(submit.id))
+    #if Submit.objects.filter(second_mark=-1, second_judge=request.user).count() > 0:
+    #    submit = Submit.objects.filter(second_mark=-1, second_judge=request.user)[0]
+    #    return HttpResponseRedirect(settings.SITE + '/check/2nd/' + str(submit.problem_id) + '/' + str(submit.id))
+    #if Submit.objects.filter(final_mark=-1, third_judge=request.user).count() > 0:
+    #    submit = Submit.objects.filter(final_mark=-1, third_judge=request.user)[0]
+    #    return HttpResponseRedirect(settings.SITE + '/check/3rd/' + str(submit.problem_id) + '/' + str(submit.id))
 
     submits_stat = submit_statistics(contest_id)
     problems = Problem.objects.filter(contest__id=contest_id).order_by('id')
@@ -143,12 +143,13 @@ def jury(request, contest_id):
                     'submits_for_third_percent': 100 * submits_stat[4] // submits_stat[0] if submits_stat[0] else 100,
                     'final_percent': 100 * submits_stat[5] // submits_stat[0] if submits_stat[0] else 100,
                     'probs': probs,
+                    'contest_id': contest_id,
                 },
                 context_instance=RequestContext(request)
             )
 
 
-def check(request, time, problem_id, submit_id=None):
+def check(request, contest_id, time, problem_id, submit_id=None):
     if submit_id is None:
         if time == '1':
             submit = Submit.objects.filter(problem__id=problem_id, first_mark=-2).order_by('?')[0] #latest('datetime')
@@ -163,7 +164,7 @@ def check(request, time, problem_id, submit_id=None):
             submit.final_mark=-1
             submit.third_judge=request.user
         submit.save()
-        return HttpResponseRedirect('/check/' + time + ('st/' if time == '1' else 'nd/' if time == '2' else 'rd/') + str(problem_id) + '/' + str(submit.id))
+        return HttpResponseRedirect('/check/' + str(contest_id) + '/' + time + ('st/' if time == '1' else 'nd/' if time == '2' else 'rd/') + str(problem_id) + '/' + str(submit.id))
     else:
         submit = Submit.objects.get(id=submit_id)
         return render(request, 'olymp/check.html', {
@@ -175,6 +176,7 @@ def check(request, time, problem_id, submit_id=None):
                 'time': time,
                 'marks': list(zip(settings.marks,range(settings.max_mark + 1))),
                 'pictures': pictures,
+                'contest_id': contest_id,
             })
 
 
@@ -199,7 +201,7 @@ def source(request, submit_id):
 
 
 @user_passes_test(is_jury)
-def rate(request, submit_id, time):
+def rate(request, contest_id, submit_id, time):
     submit = Submit.objects.get(id=submit_id)
     if time == '1':
        if request.POST["subm"] != _('no mark'):
@@ -226,7 +228,7 @@ def rate(request, submit_id, time):
         submit.third_comment = request.POST["comment"]
     submit.save()
 #    return HttpResponseRedirect(reverse('statistics', args=[submit]))
-    return HttpResponseRedirect(reverse('statistics'))
+    return HttpResponseRedirect(reverse('jury', args=[contest_id]))
 
 pictures = []
 def is_picture(submit):

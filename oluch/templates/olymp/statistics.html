@@ -39,7 +39,7 @@
 {% for i in probs %}
   <td>{{ i.2 }} 
   {% if i.2 > 0 %}
-    <a href="/check/1st/{{i.0.id}}">Проверить</a>
+    <a href="/check/{{ contest_id }}/1st/{{i.0.id}}">Проверить</a>
   {% endif %}
   </td>	
 {% endfor %}
@@ -50,7 +50,7 @@
 {% for i in probs %}
   <td>{{ i.3 }}	
   {% if i.4 > 0 %}
-  <a href="/check/2nd/{{ i.0.id }}">Проверить ({{ i.4 }})</a>
+  <a href="/check/{{ contest_id }}/2nd/{{ i.0.id }}">Проверить ({{ i.4 }})</a>
   </td>
   {% endif %}
 {% endfor %}
@@ -61,7 +61,7 @@
 {% for i in probs %}
   <td>{{ i.8 }}	
   {% if i.7 > 0 %}
-  <a href="/check/3rd/{{ i.0.id }}">Проверить ({{ i.7 }})</a>
+  <a href="/check/{{ contest_id }}/3rd/{{ i.0.id }}">Проверить ({{ i.7 }})</a>
   </td>
   {% endif %}
 {% endfor %}
