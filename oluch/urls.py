@@ -8,18 +8,25 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^login$', 'django.contrib.auth.views.login', name='login'),
-    url(r'^contest_list$', 'oluch.views.contest_list', name='contest_list'),
-    url(r'^jury/(\d+)$', 'oluch.views.jury', name='jury'),
-    url(r'^user/(\d+)$', 'oluch.views.user', name='user'),
     url(r'^$', 'django.contrib.auth.views.login', name='login'),
+    url(r'^register$', 'oluch.views.register', name='register'),
+    url(r'^login$', 'django.contrib.auth.views.login', name='login'),
+    url(r'^logout$', 'oluch.views.logout_user', name='logout'),
+    url(r'^contest_list$', 'oluch.views.contest_list', name='contest_list'),
+
+    url(r'^user/(\d+)$', 'oluch.views.user', name='user'),
+
+    url(r'^jury/(\d+)$', 'oluch.views.jury', name='jury'),
+    url(r'^jury_list$', 'oluch.views.jury_list', name='jury_list'),
+
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root': settings.MEDIA_ROOT}),
 
     # OLD
     url(r'^clear$', 'oluch.views.clear_minus_one', name='clear'),
-    url(r'^jury_list$', 'oluch.views.jury_list', name='jury_list'),
     url(r'^solution_stat$', 'oluch.views.solution_stat', name='solution_stat'),
-    url(r'^register$', 'oluch.views.register', name='register'),
-    url(r'^logout$', 'oluch.views.logout_user', name='logout'),
     # url(r'^statistics$', 'oluch.views.statistics', name='statistics'),
     # url(r'^statistics/(P?<submit>.+)$', 'oluch.views.statistics', name='statistics'),
     url(r'^results$', 'oluch.views.results', name='results'),
@@ -29,13 +36,5 @@ urlpatterns = patterns('',
     url(r'^check/(?P<time>[123])../(?P<problem_id>\d+)/(?P<submit_id>\d+)$', 'oluch.views.check', name='check'), 
     url(r'^rate/(?P<submit_id>\d+)/(?P<time>[123])$', 'oluch.views.rate', name='rate'),
 
-    # Uncomment the admin/doc line below to enable admin documentation:
-    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
-
-    url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
-        {'document_root': settings.MEDIA_ROOT}),
 
 )
