@@ -58,7 +58,6 @@ def register(request):
 
 def contest_list(request):
     jury = is_jury(request.user)
-    print(jury)
     all_contests = Contest.objects.all()
     return render(request, 'olymp/contest_list.html', 
              {'contests': all_contests,
@@ -162,7 +161,6 @@ def jury(request, contest_id):
     problems_first_me = [Submit.objects.filter(problem=problem, first_mark__gt=-1, second_mark=-2).exclude(first_judge=request.user).count() for problem in problems]
     problems_second_me = [Submit.objects.filter(problem=problem, second_mark__gt=-1, final_mark=-2).exclude(first_judge=request.user).exclude(second_judge=request.user).count() for problem in problems]
     probs = list(zip(problems, problems_number, problems_zero, problems_first, problems_first_me, problems_final, problems_checking, problems_second_me, problems_for_third))
-    print(probs)
     return render_to_response('olymp/statistics.html', {
                     'submits_count': submits_stat[0],
                     'zero_count': submits_stat[1],
@@ -253,6 +251,22 @@ def clear_minus_one(request):
         submit.save()
     return HttpResponseRedirect(reverse('contest_list'))
             
+@user_passes_test(is_jury)
+def solution_stat(request, contest_id):
+    problems = Problem.objects.filter(contest__id=contest_id).order_by('id')
+    problems_nums = list(range(len(problems)))
+    marks = list(range(settings.max_mark + 1))
+    stats = [[settings.marks[mark]] + [Submit.objects.filter(problem=problem, final_mark=mark).count() for problem in problems] for mark in marks]
+    return render_to_response('olymp/solution_stat.html', {
+                    'problems_nums': problems_nums,
+                    'problems': problems,
+                    'marks': settings.marks,
+                    'stats': stats,
+                    'contest_id' : contest_id,
+                },
+                context_instance=RequestContext(request)
+            )
+
 
 
 ############# Not checked - from oluch1
@@ -302,21 +316,6 @@ def is_picture(submit):
 
 
 
-
-@user_passes_test(is_jury)
-def solution_stat(request):
-    problems = Problem.objects.all().order_by('id')
-    problems_nums = list(range(len(problems)))
-    marks = list(range(settings.max_mark + 1))
-    stats = [[settings.marks[mark]] + [Submit.objects.filter(problem=problem, final_mark=mark).count() for problem in problems] for mark in marks]
-    return render_to_response('olymp/solution_stat.html', {
-                    'problems_nums': problems_nums,
-                    'problems': problems,
-                    'marks': settings.marks,
-                    'stats': stats,
-                },
-                context_instance=RequestContext(request)
-            )
 
 
 #@user_passes_test(is_jury)
