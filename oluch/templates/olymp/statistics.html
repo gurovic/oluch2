@@ -76,7 +76,7 @@
 </table>
 
 <br><br>
-<p><a href={% url 'results' %}>Таблица результатов/Проверка конкретной работы</a>		
-<p><a href={% url 'solution_stat' %}>Статистика по баллам</a>		
+<p><a href={% url 'results' contest_id %}>Таблица результатов/Проверка конкретной работы</a>		
+<p><a href={% url 'solution_stat' contest_id %}>Статистика по баллам</a>		
 <p><a href={% url 'jury_list' %}>Список членов жюри</a>		
 {% endblock %}

@@ -119,6 +119,7 @@ def is_jury(user):
     return Group.objects.get(name='Jury') in user.groups.all()
 
 
+@user_passes_test(is_jury)
 def jury_list(request):
     jury = User.objects.filter(groups__name__contains='Jury')
     return render_to_response('olymp/jury_list.html',
@@ -180,6 +181,7 @@ def jury(request, contest_id):
             )
 
 
+@user_passes_test(is_jury)
 def check(request, contest_id, time, problem_id, submit_id=None):
     if submit_id is None:
         if time == '1':
@@ -267,6 +269,45 @@ def solution_stat(request, contest_id):
                 context_instance=RequestContext(request)
             )
 
+@user_passes_test(is_jury)
+def results(request, contest_id):
+    print(list(Problem.objects.filter(contest__id=contest_id)))
+    problems_response = Problem.objects.filter(contest__id=contest_id) 
+    problems = dict(zip(map(lambda x: x.id, 
+                 problems_response), range(1, len(problems_response) + 1)))
+    results = dict()
+    for user in User.objects.all():
+        results[user.id] = [None, None]
+        results[user.id][0] = [user.last_name + ' ' + user.first_name, user.userprofile.grade, 
+        user.userprofile.maxgrade, user.userprofile.school, user.userprofile.city, user.userprofile.country, ]
+        results[user.id][1] = [-4] * (len(problems_response) + 1)
+        
+        submits = Submit.objects.filter(author=user, problem__contest__id=contest_id).order_by('problem')
+        for submit in submits:
+            if submit.final_mark >= 0:
+                results[user.id][1][problems[submit.problem.id]] = {'mark':settings.marks[submit.final_mark], 'id':submit.id}
+            elif submit.second_mark >= 0:
+                results[user.id][1][problems[submit.problem.id]] = {'mark':-1, 'id':submit.id, 'judges': [submit.first_judge, submit.second_judge]}
+            elif submit.first_mark >= 0:
+                results[user.id][1][problems[submit.problem.id]] = {'mark':-2, 'id':submit.id, 'judges': [submit.first_judge]}
+            else:
+                print(111, user.id)
+                print(222, results[user.id])
+                print(333, results[user.id][1])
+                print(444, submit.problem.id)
+                results[user.id][1][problems[submit.problem.id]] = {'mark':-3, 'id':submit.id}
+
+    print(results.values())
+    res = results.values()
+    results = [r for r in res] 
+    return render_to_response('olymp/results.html', {
+                               'results' : results,
+                               'problems': problems_response,
+                               'contest_id': contest_id,
+                                    },
+                context_instance=RequestContext(request)
+            )
+
 
 
 ############# Not checked - from oluch1
@@ -312,39 +353,8 @@ def is_picture(submit):
             is_picture = '0'
         return is_picture
         
-@user_passes_test(is_jury)
 
 
 
 
-
-#@user_passes_test(is_jury)
-def results(request):
-    problems = dict(zip(map(lambda x: x.id, Problem.objects.all()), range(1, 20)))
-    results = dict()
-    for user in User.objects.annotate(num=Count('submit')).filter(num__gt=0):
-        results[user.id] = [None, None]
-        results[user.id][0] = [user.last_name + ' ' + user.first_name, user.userprofile.grade, 
-        user.userprofile.maxgrade, user.userprofile.city, user.userprofile.country, ]
-        results[user.id][1] = [-4] * (20)
-        
-        submits = Submit.objects.filter(author=user).order_by('problem')
-        for submit in submits:
-            if submit.final_mark >= 0:
-                results[user.id][1][problems[submit.problem.id]] = {'mark':settings.marks[submit.final_mark], 'id':submit.id}
-            elif submit.second_mark >= 0:
-                results[user.id][1][problems[submit.problem.id]] = {'mark':-1, 'id':submit.id, 'judges': [submit.first_judge, submit.second_judge]}
-            elif submit.first_mark >= 0:
-                results[user.id][1][problems[submit.problem.id]] = {'mark':-2, 'id':submit.id, 'judges': [submit.first_judge]}
-            else:
-                results[user.id][1][problems[submit.problem.id]] = {'mark':-3, 'id':submit.id}
-
-    res = sorted(results.values(), reverse=True) 
-    results = [r for r in res] 
-    return render_to_response('olymp/results.html', {
-                               'results' : results,
-                               'problems': Problem.objects.all(),
-                                    },
-                context_instance=RequestContext(request)
-            )
 
