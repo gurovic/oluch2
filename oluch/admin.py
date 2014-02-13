@@ -3,8 +3,8 @@ from oluch.models import Problem, Submit, Contest, UserProfile, Mark
 
 @admin.register(Problem)
 class ProblemAdmin(admin.ModelAdmin):
-    list_display = ('contest', 'number', 'title', 'sort_order')
-    list_display_links = ('number', 'title')
+    list_display = ('number', 'contest', 'sort_order',)
+    list_display_links = ('number', )
 
 @admin.register(Contest)
 class ContestAdmin(admin.ModelAdmin):

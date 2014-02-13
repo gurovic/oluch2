@@ -152,7 +152,7 @@ msgstr "Результаты проверки"
 
 #: .\templates\olymp\user.html:28
 msgid "To contest list"
-msgstr "К списку олимпиад"
+msgstr "К списку вариантов"
 
 #: .\templates\olymp\user.html:35
 msgid "problem is not checked yet"
