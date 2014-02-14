@@ -285,7 +285,7 @@ def results(request, contest_id):
         submits = Submit.objects.filter(author=user, problem__contest__id=contest_id).order_by('problem')
         for submit in submits:
             if submit.final_mark >= 0:
-                results[user.id][1][problems[submit.problem.id]] = {'mark':settings.marks[submit.final_mark], 'id':submit.id}
+                results[user.id][1][problems[submit.problem.id]] = {'mark': submit.final_mark, 'id':submit.id}
             elif submit.second_mark >= 0:
                 results[user.id][1][problems[submit.problem.id]] = {'mark':-1, 'id':submit.id, 'judges': [submit.first_judge, submit.second_judge]}
             elif submit.first_mark >= 0:

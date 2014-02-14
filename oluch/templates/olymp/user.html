@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load mark_filter %}
 {% load i18n %} 
 {% block content %}
 <link href="{{ STATIC_URL }}css/user.css" rel="stylesheet" type="text/css" media="screen" />
@@ -32,11 +33,10 @@
 <div id="results">
 {% if contest.show_results %}
 <h4>{% trans "Results" %}</h4>
-{% load mark_filter %}
 {% for submit in submits %}
   <p>{{ submit.problem }}:
   {% if submit.final_mark >= 0 %}
-      {{ submit.final_mark|mark }}
+      {{ submit.final_mark | mark }}
   {% else %}
       {% trans "problem is not checked yet" %}
   {% endif %}

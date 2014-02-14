@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load i18n %} 
+{% load mark_filter %}
 {% block content %}
 <style>
    a { 
@@ -46,7 +48,7 @@
         {% elif cell == -3 %}
           <td>&nbsp;</td>
         {% else %}
-          <td><a href="/source/{{cell.id}}">{{ cell.mark }}</a></td>
+          <td><a href="/source/{{cell.id}}">{{ cell.mark | mark }}</a></td>
         {% endif %}
     {% endfor%}
     </tr>

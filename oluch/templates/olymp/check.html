@@ -1,16 +1,18 @@
 {% extends "base.html" %}
+{% load i18n %} 
+{% load mark_filter %}
 {% block content %}
 <p><a href="{{ MEDIA_URL}}resh.doc">Решения</a> <a href="{{ MEDIA_URL}}crit.rtf">Критерии</a>
 <h3>РЕШЕНИЕ №{{submit.id}} ({{ author.last_name }} {{ author.first_name }})</h3>
 {% if time == '1' %}
 <p>ПЕРВАЯ ПРОВЕРКА
 {% else %}
-<p><b>результат первой проверки: <font size=+2>{{ first_mark }}</font></b> ({{ submit.first_judge.last_name }})
+<p><b>результат первой проверки: <font size=+2>{{ first_mark | mark }}</font></b> ({{ submit.first_judge.last_name }})
 <br><b>комментарий первого проверяющего:</b> {{ submit.first_comment }}
     {% if time == '2' %}
     <p>ВТОРАЯ ПРОВЕРКА
     {% else %}
-    <p><b>результат второй проверки: <font size=+2>{{ second_mark }}</font></b> ({{ submit.second_judge.last_name }})
+    <p><b>результат второй проверки: <font size=+2>{{ second_mark |mark }}</font></b> ({{ submit.second_judge.last_name }})
     <br><b>комментарий второго проверяющего:</b> {{ submit.second_comment }}
     <p>ТРЕТЬЯ ПРОВЕРКА
     {% endif %}
