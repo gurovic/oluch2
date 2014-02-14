@@ -20,20 +20,20 @@ urlpatterns = patterns('',
     url(r'^jury_list$', 'oluch.views.jury_list', name='jury_list'),
     url(r'^check/(?P<contest_id>\d+)/(?P<time>[123])../(?P<problem_id>\d+)$', 'oluch.views.check', name='check'),
     url(r'^check/(?P<contest_id>\d+)/(?P<time>[123])../(?P<problem_id>\d+)/(?P<submit_id>\d+)$', 'oluch.views.check', name='check'), 
-    url(r'^solution_stat/(?P<contest_id>\d+)	$', 'oluch.views.solution_stat', name='solution_stat'),
+    url(r'^solution_stat/(?P<contest_id>\d+)$', 'oluch.views.solution_stat', name='solution_stat'),
 
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
     url(r'^results/(?P<contest_id>\d+)$', 'oluch.views.results', name='results'),
+    url(r'^source/(?P<submit_id>.+)$', 'oluch.views.source', name='source'),
 
     # OLD
     url(r'^clear$', 'oluch.views.clear_minus_one', name='clear'),
     # url(r'^statistics$', 'oluch.views.statistics', name='statistics'),
     # url(r'^statistics/(P?<submit>.+)$', 'oluch.views.statistics', name='statistics'),
-    url(r'^source/(?P<submit_id>.+)$', 'oluch.views.source', name='source'),
-    url(r'^source$', 'oluch.views.source', {'submit_id':0}, name='source'),
+    #url(r'^source$', 'oluch.views.source', {'submit_id':0}, name='source'),
     url(r'^rate/(?P<contest_id>\d+)/(?P<submit_id>\d+)/(?P<time>[123])$', 'oluch.views.rate', name='rate'),
 
 

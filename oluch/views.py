@@ -204,8 +204,8 @@ def check(request, contest_id, time, problem_id, submit_id=None):
                 'is_picture': is_picture(submit),
                 'submit': submit,
                 'author': submit.author,
-                'first_mark': settings.marks[int(submit.first_mark)],
-                'second_mark': settings.marks[int(submit.second_mark)],
+                'first_mark': submit.first_mark,
+                'second_mark': submit.second_mark,
                 'time': time,
                 'marks': list(zip(settings.marks,range(settings.max_mark + 1))),
                 'pictures': pictures,
@@ -258,7 +258,7 @@ def solution_stat(request, contest_id):
     problems = Problem.objects.filter(contest__id=contest_id).order_by('id')
     problems_nums = list(range(len(problems)))
     marks = list(range(settings.max_mark + 1))
-    stats = [[settings.marks[mark]] + [Submit.objects.filter(problem=problem, final_mark=mark).count() for problem in problems] for mark in marks]
+    stats = [[mark, [Submit.objects.filter(problem=problem, final_mark=mark).count() for problem in problems]] for mark in marks]
     return render_to_response('olymp/solution_stat.html', {
                     'problems_nums': problems_nums,
                     'problems': problems,

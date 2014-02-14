@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load i18n %} 
+{% load mark_filter %}
 {% block content %}
 <table border=1 cellspacing=0>
 <tr>
@@ -10,7 +12,8 @@
 
 {% for line in stats %}
   <tr>
-  {% for cell in line %}
+    <td>{{ line.0 | mark }}</td>
+  {% for cell in line.1 %}
     <td>{% if cell > 0%}{{ cell }}{% else %}&nbsp;{% endif %} </td>
   {% endfor %}
   </tr>
