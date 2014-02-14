@@ -19,6 +19,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='contest',
             name='statement_file',
-            field=models.FileField(upload_to=oluch.models.statements_filepath, null=True, verbose_name='Statements', blank=True),
+            field=models.FileField(upload_to=oluch.models.solutions_filepath, null=True, verbose_name='Statements', blank=True),
         ),
     ]

@@ -183,6 +183,7 @@ def jury(request, contest_id):
 
 @user_passes_test(is_jury)
 def check(request, contest_id, time, problem_id, submit_id=None):
+    contest = Contest.objects.get(pk=contest_id)
     if submit_id is None:
         if time == '1':
             submit = Submit.objects.filter(problem__id=problem_id, first_mark=-2).order_by('?')[0] #latest('datetime')
@@ -210,6 +211,8 @@ def check(request, contest_id, time, problem_id, submit_id=None):
                 'marks': list(zip(settings.marks,range(settings.max_mark + 1))),
                 'pictures': pictures,
                 'contest_id': contest_id,
+                'solutions': contest.solutions_file.url,
+                'criteria': contest.criteria_file.url,
             })
 
 

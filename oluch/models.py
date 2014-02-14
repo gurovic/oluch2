@@ -24,8 +24,8 @@ def create_user_profile(sender, instance, created, **kwargs):
 post_save.connect(create_user_profile, sender=User)
 
 
-def statements_filepath(instance, filename):
-    return os.path.join(str(instance.id), 'statements.' + filename.split('.')[-1])
+def solutions_filepath(instance, filename):
+    return os.path.join(str(instance.id), 'solutions.' + filename.split('.')[-1])
 
 def criteria_filepath(instance, filename):
     return os.path.join(str(instance.id), 'criteria.' + filename.split('.')[-1])
@@ -37,7 +37,7 @@ class Contest(models.Model):
     sort_order = models.IntegerField(default=1000000)
     accept_submits = models.NullBooleanField(default=False)
     show_results = models.NullBooleanField(default=False)
-    statement_file = models.FileField('Statements', upload_to=statements_filepath, blank=True, null=True)
+    solutions_file = models.FileField('Solutions', upload_to=solutions_filepath, blank=True, null=True)
     criteria_file = models.FileField('Criteria', upload_to=criteria_filepath, blank=True, null=True)
 
     def __str__(self):
