@@ -13,7 +13,7 @@ from django.shortcuts import render, render_to_response, HttpResponseRedirect
 from django.template import RequestContext
 import datetime
 import oluch.settings as settings
-from oluch.models import Submit, Problem, Contest, Mark
+from oluch.models import Submit, Problem, Contest
 from oluch.forms import SubmitForm, UserInfoForm
 from django.utils.translation import ugettext_lazy as _
 

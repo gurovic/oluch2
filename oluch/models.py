@@ -87,12 +87,5 @@ class Submit(models.Model):
             result = result + ', #' + self.problem.number # + ': '  + self.file.url
 
       
-        return result + ' ' + str(self.first_mark) + '/' + str(self.second_mark) + str(self.final_mark)
+        return result + ' ' + str(self.first_mark) + '/' + str(self.second_mark) + '/' + str(self.final_mark)
 
-class Mark(models.Model):
-    title = models.CharField(max_length=100, blank=True)
-    sort_order = models.IntegerField(default=1000000) # order in the contest
-    contest = models.ForeignKey(Contest, related_name='mark')
-
-    class Meta:
-        ordering = ['contest', 'sort_order']
