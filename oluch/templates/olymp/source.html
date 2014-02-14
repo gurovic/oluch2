@@ -1,3 +1,5 @@
+{% load i18n %} 
+{% load mark_filter %}
 {% block source %}
 <h3>РЕШЕНИЕ №{{submit.id}}</h3>
 <p><b>Задача</b> {{ submit.problem.number }}. {{ submit.problem.title }}.
@@ -5,15 +7,15 @@
 <br><br>
 <p><b>результат первой проверки: 
 {% if submit.first_mark >= 0 %}
-  <font size=+2>{{ submit.first_mark }}</font></b> ({{ submit.first_judge.last_name }})
+  <font size=+2>{{ submit.first_mark | mark }}</font></b> ({{ submit.first_judge.last_name }})
   <br><b>комментарий первого проверяющего:</b> {{ submit.first_comment }}
 {% endif %}
 {% if submit.second_mark >= 0 %}
-  <p><b>результат второй проверки: <font size=+2>{{ submit.second_mark }}</font></b> ({{ submit.second_judge.last_name }})
+  <p><b>результат второй проверки: <font size=+2>{{ submit.second_mark | mark }}</font></b> ({{ submit.second_judge.last_name }})
   <br><b>комментарий второго проверяющего:</b> {{ submit.second_comment }}
 {% endif %}
 {% if submit.final_mark >= 0 and submit.first_mark != submit.second_mark %}
-  <p><b>результат третьей проверки: <font size=+2>{{ submit.final_mark }}</font></b> ({{ submit.third_judge.last_name }})
+  <p><b>результат третьей проверки: <font size=+2>{{ submit.final_mark | mark }}</font></b> ({{ submit.third_judge.last_name }})
   <br><b>комментарий третьего проверяющего:</b> {{ submit.third_comment }}
 {% endif %}
 

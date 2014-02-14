@@ -94,7 +94,7 @@ from datetime import datetime
 
 start = datetime(2012, 9, 23, 13, 30, 0)
 finish = datetime(2043, 9, 23, 19, 0, 0) 	
-max_mark = 8
 marks = ['0', '-', '-.','-+', '+/2', '+-', '+.', '+', '+!']
+max_mark = len(marks) - 1
 LOGIN_REDIRECT_URL = '/contest_list'
 LOGIN_URL = '/login'

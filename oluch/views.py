@@ -309,14 +309,10 @@ def results(request, contest_id):
             )
 
 
-
-############# Not checked - from oluch1
-
+@user_passes_test(is_jury)
 def source(request, submit_id):
     submit = Submit.objects.get(pk=submit_id)
-    submit.first_mark = settings.marks[submit.first_mark]
-    submit.second_mark = settings.marks[submit.second_mark]
-    submit.final_mark = settings.marks[submit.final_mark]
+
     author = User.objects.get(pk=submit.author.id)
     return render_to_response('olymp/source.html', {
                     'submit': submit,
@@ -326,6 +322,9 @@ def source(request, submit_id):
                 },
                 context_instance=RequestContext(request)
             )
+
+############# Not checked - from oluch1
+
 
 
 pictures = []
