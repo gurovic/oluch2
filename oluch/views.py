@@ -211,8 +211,8 @@ def check(request, contest_id, time, problem_id, submit_id=None):
                 'marks': list(zip(settings.marks,range(settings.max_mark + 1))),
                 'pictures': pictures,
                 'contest_id': contest_id,
-                'solutions': contest.solutions_file.url,
-                'criteria': contest.criteria_file.url,
+                'solutions': contest.solutions_file.url if contest.solutions_file else "",
+                'criteria': contest.criteria_file.url if contest.criteria_file else "",
             })
 
 

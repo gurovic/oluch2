@@ -2,7 +2,12 @@
 {% load i18n %} 
 {% load mark_filter %}
 {% block content %}
-<p><a href="{{ solutions }}">Решения</a> <a href="{{ criteria }}">Критерии</a>
+<p>{% if solutions %}
+     <a href="{{ solutions }}">Решения</a>
+   {% endif %}
+   {% if criteria %}
+     <a href="{{ criteria }}">Критерии</a>
+   {% endif %}
 <h3>РЕШЕНИЕ №{{submit.id}} ({{ author.last_name }} {{ author.first_name }})</h3>
 {% if time == '1' %}
 <p>ПЕРВАЯ ПРОВЕРКА
