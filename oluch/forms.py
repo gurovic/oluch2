@@ -1,5 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 from django import forms
+from django.contrib.auth.models import User
+
 from oluch.models import Submit
 
 class SubmitForm(forms.Form):
@@ -31,6 +33,8 @@ class UserInfoForm(forms.Form):
                 self._errors['password'] = [_('Passwords must match.')]
                 self._errors['password_confirm'] = [_('Passwords must match.')]
 
+        if User.objects.filter(username=self.cleaned_data["username"]).count() > 0:
+            self._errors['username'] = [_('User with such username already exists.')]
         try:
             int(self.cleaned_data['grade'])
         except:

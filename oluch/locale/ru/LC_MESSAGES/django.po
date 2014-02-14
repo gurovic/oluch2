@@ -78,6 +78,10 @@ msgstr "Пароли должны совпадать."
 msgid "Grade must be a number."
 msgstr "Класс должен быть числом."
 
+#: .\forms.py:33 .\forms.py:42
+msgid "User with such username already exists."
+msgstr "Пользователь с таким логином уже существует."
+
 #: .\models.py:11
 msgid "grade"
 msgstr "класс"
