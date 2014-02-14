@@ -44,7 +44,9 @@ def register(request):
             profile.save()
  
             user = authenticate(username=username, password=password1)
-            # login(request, user)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
             return HttpResponseRedirect(reverse('contest_list'))
     else: # If not POST
         form = UserInfoForm()

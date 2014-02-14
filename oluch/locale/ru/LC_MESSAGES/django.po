@@ -74,6 +74,10 @@ msgstr "Страна"
 msgid "Passwords must match."
 msgstr "Пароли должны совпадать."
 
+#: .\forms.py:31 .\forms.py:32
+msgid "Bad login."
+msgstr "Плохое имя пользователя."
+
 #: .\forms.py:37 .\forms.py:42
 msgid "Grade must be a number."
 msgstr "Класс должен быть числом."

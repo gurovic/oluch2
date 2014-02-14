@@ -27,14 +27,20 @@ class UserInfoForm(forms.Form):
 
     def clean(self):
         '''Required custom validation for the form.'''
-        super(forms.Form,self).clean()
+        super(forms.Form, self).clean()
         if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
             if self.cleaned_data['password1'] != self.cleaned_data['password2']:
                 self._errors['password'] = [_('Passwords must match.')]
                 self._errors['password_confirm'] = [_('Passwords must match.')]
 
-        if User.objects.filter(username=self.cleaned_data["username"]).count() > 0:
-            self._errors['username'] = [_('User with such username already exists.')]
+        try:
+            if set(self.cleaned_data["username"]) - set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'):
+                self._errors['username'] = [_('Bad login.')]
+            elif User.objects.filter(username=self.cleaned_data["username"]).count() > 0:
+                self._errors['username'] = [_('User with such username already exists.')]
+        except:
+            self._errors['username'] = [_('Bad login.')]
+
         try:
             int(self.cleaned_data['grade'])
         except:
@@ -44,4 +50,5 @@ class UserInfoForm(forms.Form):
             int(self.cleaned_data['maxgrade'])
         except:
             self._errors['maxgrade'] = [_('Grade must be a number.')]
+
         return self.cleaned_data
