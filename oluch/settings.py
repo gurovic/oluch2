@@ -98,3 +98,5 @@ marks = ['0', '-', '-.','-+', '+/2', '+-', '+.', '+', '+!']
 max_mark = len(marks) - 1
 LOGIN_REDIRECT_URL = '/contest_list'
 LOGIN_URL = '/login'
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 50000000
