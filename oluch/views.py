@@ -18,6 +18,35 @@ from oluch.forms import SubmitForm, UserInfoForm
 from django.utils.translation import ugettext_lazy as _
 
 
+def is_picture(submit):
+        pictures = []
+
+        if str(submit.file).split('.')[-1] in ['png', 'gif', 'jpeg', 'jpg', 'PNG', 'GIF', 'JPEG', 'JPG']:
+            is_picture = ['1']
+
+        elif str(submit.file).split('.')[-1] == 'zip' or str(submit.file).split('.')[-1] == 'ZIP':
+            is_picture = '2'
+            unzippath = os.path.join(settings.MEDIA_ROOT, str(submit.file).split('.')[0])
+            zipf = zipfile.ZipFile(os.path.join(settings.MEDIA_ROOT, str(submit.file)), 'r')
+            pictures = map(lambda x: os.path.join(str(submit.file).split('.')[0], x), sorted(zipf.namelist()))
+            if not os.path.exists(unzippath):
+                os.mkdir(unzippath)
+                zipf.extractall(path=unzippath)
+
+        elif str(submit.file).split('.')[-1] == 'rar' or str(submit.file).split('.')[-1] == 'RAR':
+            is_picture = '2'
+            unzippath = os.path.join(settings.MEDIA_ROOT, str(submit.file).split('.')[0])
+            zipf = rarfile.RarFile(os.path.join(settings.MEDIA_ROOT, str(submit.file)), 'r')
+            pictures = map(lambda x: os.path.join(str(submit.file).split('.')[0], x), sorted(zipf.namelist()))
+            if not os.path.exists(unzippath):
+                os.mkdir(unzippath)
+                zipf.extractall(path=unzippath)
+
+        else:
+            is_picture = '0'
+
+        return [is_picture, pictures]
+
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect(reverse('login'))
@@ -203,8 +232,9 @@ def check(request, contest_id, time, problem_id, submit_id=None):
         return HttpResponseRedirect('/check/' + str(contest_id) + '/' + time + ('st/' if time == '1' else 'nd/' if time == '2' else 'rd/') + str(problem_id) + '/' + str(submit.id))
     else:
         submit = Submit.objects.get(id=submit_id)
+        picture_type, pictures = is_picture(submit)
         return render(request, 'olymp/check.html', {
-                'is_picture': is_picture(submit),
+                'is_picture': picture_type,
                 'submit': submit,
                 'author': submit.author,
                 'first_mark': submit.first_mark,
@@ -319,46 +349,12 @@ def source(request, submit_id):
     submit = Submit.objects.get(pk=submit_id)
 
     author = User.objects.get(pk=submit.author.id)
+    picture_type, pictures = is_picture(submit)
     return render_to_response('olymp/source.html', {
                     'submit': submit,
                     'author': author,
-                    'is_picture': is_picture(submit),
+                    'is_picture': picture_type,
                     'pictures': pictures,
                 },
                 context_instance=RequestContext(request)
             )
-
-############# Not checked - from oluch1
-
-
-
-pictures = []
-def is_picture(submit):
-        global pictures
-        if str(submit.file).split('.')[-1] in ['png', 'gif', 'jpeg', 'jpg', 'PNG', 'GIF', 'JPEG', 'JPG']:
-            is_picture = '1'
-        elif str(submit.file).split('.')[-1] == 'zip' or str(submit.file).split('.')[-1] == 'ZIP':
-            is_picture = '2'
-            unzippath = os.path.join(settings.MEDIA_ROOT, str(submit.file).split('.')[0])
-            zipf = zipfile.ZipFile(os.path.join(settings.MEDIA_ROOT, str(submit.file)), 'r')
-            pictures = map(lambda x: os.path.join(str(submit.file).split('.')[0], x), sorted(zipf.namelist()))
-            if not os.path.exists(unzippath):
-                os.mkdir(unzippath)
-                zipf.extractall(path=unzippath)
-        elif str(submit.file).split('.')[-1] == 'rar' or str(submit.file).split('.')[-1] == 'RAR':
-            is_picture = '2'
-            unzippath = os.path.join(settings.MEDIA_ROOT, str(submit.file).split('.')[0])
-            zipf = rarfile.RarFile(os.path.join(settings.MEDIA_ROOT, str(submit.file)), 'r')
-            pictures = map(lambda x: os.path.join(str(submit.file).split('.')[0], x), sorted(zipf.namelist()))
-            if not os.path.exists(unzippath):
-                os.mkdir(unzippath)
-                zipf.extractall(path=unzippath)
-        else:
-            is_picture = '0'
-        return is_picture
-        
-
-
-
-
-
