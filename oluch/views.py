@@ -1,4 +1,5 @@
 import os
+import sys
 import zipfile
 import rarfile
 rarfile.UNRAR_TOOL='/usr/local/bin/unrar'
@@ -18,26 +19,41 @@ from oluch.forms import SubmitForm, UserInfoForm
 from django.utils.translation import ugettext_lazy as _
 
 
-def is_picture(submit):
+def is_picture(submit_file):
         pictures = []
 
-        if str(submit.file).split('.')[-1] in ['png', 'gif', 'jpeg', 'jpg', 'PNG', 'GIF', 'JPEG', 'JPG']:
+        if str(submit_file).split('.')[-1] in ['png', 'gif', 'jpeg', 'jpg', 'PNG', 'GIF', 'JPEG', 'JPG']:
             is_picture = ['1']
 
-        elif str(submit.file).split('.')[-1] == 'zip' or str(submit.file).split('.')[-1] == 'ZIP':
+        elif str(submit_file).split('.')[-1] == 'zip' or str(submit_file).split('.')[-1] == 'ZIP':
             is_picture = '2'
-            unzippath = os.path.join(settings.MEDIA_ROOT, str(submit.file).split('.')[0])
-            zipf = zipfile.ZipFile(os.path.join(settings.MEDIA_ROOT, str(submit.file)), 'r')
-            pictures = map(lambda x: os.path.join(str(submit.file).split('.')[0], x), sorted(zipf.namelist()))
+            unzippath = os.path.join(settings.MEDIA_ROOT, str(submit_file).split('.')[0])
+            zipf = zipfile.ZipFile(os.path.join(settings.MEDIA_ROOT, str(submit_file)), 'r')
             if not os.path.exists(unzippath):
                 os.mkdir(unzippath)
-                zipf.extractall(path=unzippath)
+                num = 10
+                for filename in zipf.namelist():
+                    submit_file_name = str(submit_file).replace('\\', '/') 
+                    rel_path = submit_file_name[:submit_file_name.rfind('.')]
+                    file_content = zipf.open(filename, "r").read()
+                    new_filename = os.path.join(unzippath, str(num) + '.' + filename.split('.')[-1])
 
-        elif str(submit.file).split('.')[-1] == 'rar' or str(submit.file).split('.')[-1] == 'RAR':
+                    fout = open(new_filename, "wb")
+                    fout.write(file_content)
+                    fout.close()
+
+                    pictures.append(rel_path + '/' + new_filename.split(os.sep)[-1])
+                    num += 1
+            else:
+                pictures = list(map(lambda x: str(submit_file).split('.')[0] + '/' + x, os.listdir(unzippath)))
+                print(pictures)
+
+            
+        elif str(submit_file).split('.')[-1] == 'rar' or str(submit_file).split('.')[-1] == 'RAR':
             is_picture = '2'
-            unzippath = os.path.join(settings.MEDIA_ROOT, str(submit.file).split('.')[0])
-            zipf = rarfile.RarFile(os.path.join(settings.MEDIA_ROOT, str(submit.file)), 'r')
-            pictures = map(lambda x: os.path.join(str(submit.file).split('.')[0], x), sorted(zipf.namelist()))
+            unzippath = os.path.join(settings.MEDIA_ROOT, str(submit_file).split('.')[0])
+            zipf = rarfile.RarFile(os.path.join(settings.MEDIA_ROOT, str(submit_file)), 'r')
+            pictures = map(lambda x: os.path.join(str(submit_file).split('.')[0], x), sorted(zipf.namelist()))
             if not os.path.exists(unzippath):
                 os.mkdir(unzippath)
                 zipf.extractall(path=unzippath)
@@ -232,7 +248,7 @@ def check(request, contest_id, time, problem_id, submit_id=None):
         return HttpResponseRedirect('/check/' + str(contest_id) + '/' + time + ('st/' if time == '1' else 'nd/' if time == '2' else 'rd/') + str(problem_id) + '/' + str(submit.id))
     else:
         submit = Submit.objects.get(id=submit_id)
-        picture_type, pictures = is_picture(submit)
+        picture_type, pictures = is_picture(submit.file)
         return render(request, 'olymp/check.html', {
                 'is_picture': picture_type,
                 'submit': submit,
@@ -349,7 +365,7 @@ def source(request, submit_id):
     submit = Submit.objects.get(pk=submit_id)
 
     author = User.objects.get(pk=submit.author.id)
-    picture_type, pictures = is_picture(submit)
+    picture_type, pictures = is_picture(submit.file)
     return render_to_response('olymp/source.html', {
                     'submit': submit,
                     'author': author,
