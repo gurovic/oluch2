@@ -27,8 +27,9 @@ ARCHIVE_OBJECTS = {'zip': zipfile.ZipFile, 'rar': rarfile.RarFile}
 def is_picture(submit_filename):
     pictures = []
     extension = submit_filename.split('.')[-1].lower()
+    print(extension in IMAGE_EXTENSIONS)
     if extension in IMAGE_EXTENSIONS:
-        is_picture = ['1']
+        is_picture = '1'
     elif extension in ARCHIVE_OBJECTS.keys():
         is_picture = '2'
         unzippath = os.path.join(settings.MEDIA_ROOT, submit_filename.split('.')[0])
@@ -51,6 +52,7 @@ def is_picture(submit_filename):
         else:
             pictures = list(map(lambda x: submit_filename.split('.')[0] + '/' + x, os.listdir(unzippath)))
     else:
+        print('***0')
         is_picture = '0'
 
     return [is_picture, pictures]
