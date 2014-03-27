@@ -27,7 +27,6 @@ ARCHIVE_OBJECTS = {'zip': zipfile.ZipFile, 'rar': rarfile.RarFile}
 def is_picture(submit_filename):
     pictures = []
     extension = submit_filename.split('.')[-1].lower()
-    print(extension in IMAGE_EXTENSIONS)
     if extension in IMAGE_EXTENSIONS:
         is_picture = '1'
     elif extension in ARCHIVE_OBJECTS.keys():
@@ -52,7 +51,6 @@ def is_picture(submit_filename):
         else:
             pictures = list(map(lambda x: submit_filename.split('.')[0] + '/' + x, os.listdir(unzippath)))
     else:
-        print('***0')
         is_picture = '0'
 
     return [is_picture, pictures]
@@ -316,7 +314,6 @@ def solution_stat(request, contest_id):
 
 @user_passes_test(is_jury)
 def results(request, contest_id):
-    print(list(Problem.objects.filter(contest__id=contest_id)))
     problems_response = Problem.objects.filter(contest__id=contest_id) 
     problems = dict(zip(map(lambda x: x.id, 
                             problems_response), range(1, len(problems_response) + 1)))
@@ -336,13 +333,8 @@ def results(request, contest_id):
             elif submit.first_mark >= 0:
                 results[user.id][1][problems[submit.problem.id]] = {'mark':-2, 'id':submit.id, 'judges': [submit.first_judge]}
             else:
-                print(111, user.id)
-                print(222, results[user.id])
-                print(333, results[user.id][1])
-                print(444, submit.problem.id)
                 results[user.id][1][problems[submit.problem.id]] = {'mark':-3, 'id':submit.id}
 
-    print(results.values())
     res = results.values()
     results = [r for r in res] 
     return render_to_response('olymp/results.html', {
