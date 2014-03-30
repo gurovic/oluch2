@@ -54,7 +54,7 @@ class Problem(models.Model):
     contest = models.ForeignKey(Contest, related_name='problem')
 
     def __str__(self):
-        return self.number + (('. ' + self.title) if self.title else "")
+        return self.number + "(" + str(self.contest.short_title) + ")"
 
     class Meta:
         ordering = ['contest', 'sort_order']
@@ -90,9 +90,9 @@ class Submit(models.Model):
             result = self.author.username
         
         if self.problem.title:
-            result = result + ', #' + self.problem.number + '. ' + self.problem.title # + ': ' + self.file.url
+            result = result + ', ' + str(self.problem.contest.short_title) + ' #' + self.problem.number + '. ' + self.problem.title # + ': ' + self.file.url
         else:
-            result = result + ', #' + self.problem.number # + ': '  + self.file.url
+            result = result + ', ' + str(self.problem.contest.short_title) + ' #' + self.problem.number # + ': '  + self.file.url
 
       
         return result + ' ' + str(self.first_mark) + '/' + str(self.second_mark) + '/' + str(self.final_mark)
