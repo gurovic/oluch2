@@ -51,4 +51,8 @@ class UserInfoForm(forms.Form):
         except:
             self._errors['maxgrade'] = [_('Grade must be a number.')]
 
+        self.cleaned_data['lastname'] = self.cleaned_data['lastname'][0].upper() + self.cleaned_data['lastname'][1:]
+        self.cleaned_data['firstname'] = self.cleaned_data['firstname'][0].upper() + self.cleaned_data['firstname'][1:]
+
+
         return self.cleaned_data
