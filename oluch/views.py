@@ -336,7 +336,7 @@ def results(request, contest_id):
                 results[user.id][1][problems[submit.problem.id]] = {'mark':-3, 'id':submit.id}
 
     res = results.values()
-    results = [r for r in res] 
+    results = sorted([r for r in res], key = lambda x: str.lower(x[0][0][0])) 
     return render_to_response('olymp/results.html', {
         'results' : results,
         'problems': problems_response,
