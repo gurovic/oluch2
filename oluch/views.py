@@ -337,8 +337,15 @@ def results(request, contest_id):
 
     res = results.values()
     results = sorted([r for r in res], key = lambda x: str.lower(x[0][0][0])) 
+    print(results)
+
+    notempty_results = []
+    for i in range(len(results)):
+        if results[i][1].count(-4) != (len(problems_response) + 1):
+            notempty_results.append(results[i])
+
     return render_to_response('olymp/results.html', {
-        'results' : results,
+        'results' : notempty_results,
         'problems': problems_response,
         'contest_id': contest_id,
         },
