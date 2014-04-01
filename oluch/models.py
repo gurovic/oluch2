@@ -6,10 +6,6 @@ from django.db import models
 from django.db.models.signals import post_save
 
 
-from django.contrib.auth.models import User
-User._meta.ordering = ['last_name']
-
-
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     grade = models.IntegerField(_('grade'), max_length=2, blank=True, null=True)
@@ -91,8 +87,11 @@ class Submit(models.Model):
         return self.author.last_name
 
     def __str__(self):
-        result = str(self.author.last_name) + str(self.author.first_name)
-      
+        if hasattr(self.author, 'lastname'):
+            result = self.author.lastname
+        else:
+            result = self.author.username
+        
         if self.problem.title:
             result = result + ', ' + str(self.problem.contest.short_title) + ' #' + self.problem.number + '. ' + self.problem.title # + ': ' + self.file.url
         else:
@@ -100,3 +99,4 @@ class Submit(models.Model):
 
       
         return result + ' ' + str(self.first_mark) + '/' + str(self.second_mark) + '/' + str(self.final_mark)
+
