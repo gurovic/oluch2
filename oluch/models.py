@@ -85,6 +85,13 @@ class Submit(models.Model):
 
     def author_lastname(self):
         return self.author.last_name
+    author_lastname.admin_order_field  = 'author__last_name'
+    author_lastname.short_description = "Lastname"    
+
+    def author_firstname(self):
+        return self.author.first_name
+    author_firstname.admin_order_field  = 'author__first_name'
+    author_firstname.short_description = "Firstname"    
 
     def __str__(self):
         if hasattr(self.author, 'lastname'):

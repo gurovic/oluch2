@@ -15,7 +15,8 @@ class ContestAdmin(admin.ModelAdmin):
 
 @admin.register(Submit)
 class Submit(admin.ModelAdmin):
-    list_display = ('id', author_lastname, 'problem', 'datetime', )
+    list_display = ('id', 'problem', 'author_lastname', 'author_firstname', 'datetime', )
     list_display_links = ('id', )
+    order_by = ('author_lastname', )
 
 admin.site.register(UserProfile)
