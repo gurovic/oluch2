@@ -87,6 +87,9 @@ class Submit(models.Model):
     #file info
     file = models.FileField(upload_to=filepath)
 
+    def author_lastname(self):
+        return self.author.last_name
+
     def __str__(self):
         result = str(self.author.last_name) + str(self.author.first_name)
       
